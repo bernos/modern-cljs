@@ -7,7 +7,7 @@
   :min-lein-version "2.5.3"
 
   ;; clj and cljs source paths
-  :source-paths ["src/clj" "src/cljs"]
+  :source-paths ["src/clj" "src/cljs" "src/brepl"]
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.145"]
@@ -20,9 +20,20 @@
   :ring {:handler modern-cljs.core/handler}
 
   :cljsbuild {:builds
-              [{:source-paths ["src/cljs"]
-                :compiler {:output-to "resources/public/js/modern.js"
+              {:dev
+               {:source-paths ["src/brepl" "src/cljs"]
+                :compiler {:output-to "resources/public/js/modern_dbg.js"
                            :optimizations :whitespace
-                           :pretty-print true}}]}
+                           :pretty-print true}}
+               :pre-prod
+               {:source-paths ["src/brepl" "src/cljs"]
+                :compiler {:output-to "resources/public/js/modern_pre.js"
+                           :optimizations :simple
+                           :pretty-print false}}
+               :prod
+                {:source-paths ["src/cljs"]
+                 :compiler {:output-to "resources/public/js/modern.js"
+                            :optimizations :advanced
+                            :pretty-print false}}}}
 
   :clean-targets ^{:protect false} [:target-path "out" "repl" "resources/public/js/"])
